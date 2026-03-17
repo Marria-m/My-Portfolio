@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mariam Ehab — Full-Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0c0c10;
+    --bg2: #13131a;
+    --bg3: #1a1a24;
+    --card: #17171f;
+    --border: rgba(255,255,255,0.07);
+    --accent: #c8a96e;
+    --accent2: #e8c99e;
+    --accent3: #8b6fd4;
+    --text: #e8e6e0;
+    --muted: #7a7870;
+    --muted2: #a09e98;
+    --green: #6fcf97;
+    --pink: #e891b0;
+    --sidebar-w: 240px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 36px 24px;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    margin-bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sidebar-logo span { color: var(--muted2); font-size: 0.75rem; font-family: 'DM Mono', monospace; }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(111,207,151,0.1);
+    border: 1px solid rgba(111,207,151,0.25);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    color: var(--green);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 32px;
+    letter-spacing: 0.05em;
+  }
+  .status-pill::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--muted2);
+    font-size: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.03em;
+    transition: all 0.2s;
+    margin-bottom: 2px;
+  }
+  nav a:hover, nav a.active {
+    background: rgba(200,169,110,0.1);
+    color: var(--accent);
+  }
+  nav a .num { color: var(--muted); font-size: 0.65rem; min-width: 18px; }
+
+  .sidebar-bottom {
+    margin-top: auto;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .sidebar-bottom a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-decoration: none;
+    padding: 6px 0;
+    transition: color 0.2s;
+    font-family: 'DM Mono', monospace;
+  }
+  .sidebar-bottom a:hover { color: var(--accent); }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+  }
+
+  section {
+    min-height: 100vh;
+    padding: 80px 60px 80px 60px;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  section.visible { opacity: 1; transform: translateY(0); }
+
+  .sec-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sec-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 80px;
+  }
+
+  h2.sec-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 48px;
+  }
+  h2.sec-title em { color: var(--accent); font-style: italic; }
+
+  /* ── HERO ── */
+  #hero {
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    padding: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 70% at 80% 50%, rgba(139,111,212,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 50% at 20% 80%, rgba(200,169,110,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 60px;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-greeting {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  .hero-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .hero-role {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    color: var(--accent);
+    font-style: italic;
+    margin-bottom: 24px;
+  }
+
+  .hero-desc {
+    font-size: 0.95rem;
+    color: var(--muted2);
+    line-height: 1.8;
+    max-width: 480px;
+    margin-bottom: 40px;
+  }
+
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,169,110,0.3); }
+  .btn-outline {
+    background: transparent;
+    color: var(--muted2);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+  .hero-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    min-width: 260px;
+    position: relative;
+  }
+  .hero-card::before {
+    content: 'mariam.json';
+    position: absolute;
+    top: -10px; left: 20px;
+    background: var(--bg);
+    padding: 0 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .json-line {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 2;
+    color: var(--muted2);
+  }
+  .json-line .key { color: var(--accent3); }
+  .json-line .val { color: var(--green); }
+  .json-line .str { color: #e8a87c; }
+
+  /* ── ABOUT ── */
+  #about .about-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  #about p { color: var(--muted2); line-height: 1.85; font-size: 0.95rem; margin-bottom: 16px; }
+  #about p strong { color: var(--text); font-weight: 500; }
+
+  .info-table { margin-top: 28px; }
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+  .info-row .label { color: var(--muted); min-width: 90px; font-family: 'DM Mono', monospace; font-size: 0.75rem; }
+  .info-row .value { color: var(--text); }
+
+  .stat-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .stat-card:hover { border-color: var(--accent); }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* ── SKILLS ── */
+  #skills .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .skill-cat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .skill-cat:hover { border-color: var(--accent); transform: translateY(-4px); }
+
+  .cat-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cat-icon { font-size: 1rem; }
+
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    color: var(--muted2);
+    font-family: 'DM Mono', monospace;
+    transition: all 0.2s;
+  }
+  .tag:hover { background: rgba(200,169,110,0.1); border-color: var(--accent); color: var(--accent); }
+
+  /* ── EXPERIENCE ── */
+  #experience .exp-list { display: flex; flex-direction: column; gap: 24px; }
+
+  .exp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    position: relative;
+    transition: border-color 0.3s;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .exp-card:hover { border-color: var(--accent); }
+  .exp-card::before {
+    content: '';
+    width: 3px;
+    height: 100%;
+    position: absolute;
+    left: 0; top: 0;
+    background: linear-gradient(to bottom, var(--accent), var(--accent3));
+    border-radius: 3px 0 0 3px;
+  }
+
+  .exp-dot {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(200,169,110,0.1);
+    border: 1px solid rgba(200,169,110,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .exp-org {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .exp-title-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .exp-period {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    background: var(--bg3);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .exp-desc { color: var(--muted2); font-size: 0.88rem; line-height: 1.75; }
+
+  .tech-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .tech-pill {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    background: rgba(139,111,212,0.12);
+    border: 1px solid rgba(139,111,212,0.2);
+    color: #b89edd;
+  }
+
+  /* ── PROJECTS ── */
+  #projects .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+
+  .proj-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .proj-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(200,169,110,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .proj-card:hover { border-color: var(--accent); transform: translateY(-6px); box-shadow: 0 20px 48px rgba(0,0,0,0.3); }
+
+  .proj-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    display: inline-block;
+  }
+  .proj-type.web { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.2); }
+  .proj-type.backend { background: rgba(139,111,212,0.12); color: #b89edd; border: 1px solid rgba(139,111,212,0.2); }
+
+  .proj-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 12px;
+  }
+  .proj-desc { color: var(--muted2); font-size: 0.88rem; line-height: 1.7; margin-bottom: 20px; }
+
+  .proj-links { display: flex; gap: 10px; }
+  .proj-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .proj-link:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ── SERVICES ── */
+  #services .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .svc-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    transition: all 0.3s;
+  }
+  .svc-card:hover { border-color: var(--accent3); transform: translateY(-4px); }
+  .svc-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: rgba(139,111,212,0.12);
+    border: 1px solid rgba(139,111,212,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+  }
+  .svc-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 10px;
+  }
+  .svc-desc { color: var(--muted2); font-size: 0.85rem; line-height: 1.7; }
+
+  /* ── EDUCATION ── */
+  #education .edu-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: start;
+    transition: border-color 0.3s;
+  }
+  #education .edu-card:hover { border-color: var(--accent); }
+  .edu-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: rgba(200,169,110,0.1);
+    border: 1px solid rgba(200,169,110,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .edu-uni { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); margin-bottom: 4px; letter-spacing: 0.05em; }
+  .edu-degree {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .edu-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+  .edu-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted2);
+    background: var(--bg3);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .edu-badge.highlight { color: var(--green); background: rgba(111,207,151,0.08); }
+
+  /* ── TESTIMONIALS ── */
+  #testimonials .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .testi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+  .testi-card:hover { border-color: var(--accent); }
+  .testi-quote {
+    font-size: 2.5rem;
+    font-family: 'DM Serif Display', serif;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+  .testi-text { color: var(--muted2); font-size: 0.9rem; line-height: 1.75; margin-bottom: 20px; font-style: italic; }
+  .testi-author { font-size: 0.82rem; color: var(--text); font-weight: 500; }
+  .testi-stars { color: var(--accent); font-size: 0.75rem; margin-bottom: 6px; }
+
+  /* ── CONTACT ── */
+  #contact .contact-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .contact-info h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-bottom: 12px;
+  }
+  .contact-info p { color: var(--muted2); font-size: 0.9rem; line-height: 1.75; margin-bottom: 28px; }
+
+  .contact-items { display: flex; flex-direction: column; gap: 14px; }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .contact-item:hover { border-color: var(--accent); transform: translateX(4px); }
+  .ci-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: rgba(200,169,110,0.1);
+    border: 1px solid rgba(200,169,110,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .ci-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); display: block; }
+  .ci-value { font-size: 0.85rem; color: var(--text); }
+
+  .contact-form { display: flex; flex-direction: column; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.05em; }
+  .form-input, .form-textarea {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { height: 120px; }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-left: var(--sidebar-w);
+    padding: 32px 60px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  footer a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  footer a:hover { color: var(--accent); }
+
+  /* ── MOBILE HEADER ── */
+  .mobile-header {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 56px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 200;
+  }
+  .mobile-logo { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--accent); }
+  .hamburger { background: none; border: none; color: var(--text); font-size: 1.2rem; cursor: pointer; }
+
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    footer { margin-left: 0; padding: 24px 20px; flex-direction: column; gap: 8px; text-align: center; }
+    .mobile-header { display: flex; }
+    .main { padding-top: 56px; }
+    section { padding: 50px 20px; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-card { display: none; }
+    #about .about-grid { grid-template-columns: 1fr; }
+    #contact .contact-wrap { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Mobile Header -->
+<header class="mobile-header">
+  <span class="mobile-logo">ME</span>
+  <button class="hamburger" onclick="toggleSidebar()">☰</button>
+</header>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    Mariam Ehab <span>/ dev</span>
+  </div>
+
+  <div class="status-pill">Available for work</div>
+
+  <nav id="nav">
+    <a href="#hero" class="active"><span class="num">01</span> About</a>
+    <a href="#about"><span class="num">02</span> Profile</a>
+    <a href="#skills"><span class="num">03</span> Skills</a>
+    <a href="#experience"><span class="num">04</span> Experience</a>
+    <a href="#projects"><span class="num">05</span> Projects</a>
+    <a href="#services"><span class="num">06</span> Services</a>
+    <a href="#education"><span class="num">07</span> Education</a>
+    <a href="#testimonials"><span class="num">08</span> Reviews</a>
+    <a href="#contact"><span class="num">09</span> Contact</a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <a href="https://github.com/Marria-m/" target="_blank">⌥ GitHub</a>
+    <a href="https://www.linkedin.com/in/mariamehab1305" target="_blank">⌥ LinkedIn</a>
+    <a href="mailto:mariamehab135@gmail.com">⌥ Email</a>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main">
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-greeting">// Hello, World!</div>
+        <h1 class="hero-name">Mariam<br>Ehab</h1>
+        <div class="hero-role">Full-Stack Web Developer</div>
+        <p class="hero-desc">
+          Motivated Computer Science student with a strong foundation in web development and a creative background in social media marketing. Passionate about transforming ideas into real projects that create value and impact.
+        </p>
+        <div class="btn-row">
+          <a href="MariamEhab_FullStackCV2.pdf" class="btn btn-primary">✦ Open My CV</a>
+          <a href="#projects" class="btn btn-outline">→ View Projects</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="json-line"><span class="key">"name"</span>: <span class="str">"Mariam Ehab"</span>,</div>
+        <div class="json-line"><span class="key">"role"</span>: <span class="str">"Full-Stack Dev"</span>,</div>
+        <div class="json-line"><span class="key">"location"</span>: <span class="str">"Cairo, Egypt"</span>,</div>
+        <div class="json-line"><span class="key">"focus"</span>: <span class="str">"Web + .NET"</span>,</div>
+        <div class="json-line"><span class="key">"status"</span>: <span class="val">available</span>,</div>
+        <div class="json-line"><span class="key">"passion"</span>: <span class="str">"Ideas → Products"</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section id="about">
+    <div class="sec-label">02. Profile</div>
+    <h2 class="sec-title">Who I <em>Am</em></h2>
+
+    <div class="about-grid">
+      <div>
+        <p>I'm <strong>Mariam Ehab</strong>, a Computer Science student at the Faculty of Computers and Artificial Intelligence, Cairo University. I'm passionate about building web applications that are both functional and beautiful.</p>
+        <p>My journey spans <strong>front-end development</strong> with React.js, back-end systems with <strong>ASP.NET Core & C#</strong>, and SQL databases — giving me a full-stack perspective on every project I take on.</p>
+        <p>Beyond code, I bring a creative edge through my background in <strong>social media marketing and content creation</strong>, making me someone who understands not just how to build digital products, but how to make them connect with real people.</p>
+
+        <div class="info-table">
+          <div class="info-row"><span class="label">Name</span><span class="value">Mariam Ehab</span></div>
+          <div class="info-row"><span class="label">Location</span><span class="value">Cairo, Egypt</span></div>
+          <div class="info-row"><span class="label">Email</span><span class="value">mariamehab135@gmail.com</span></div>
+          <div class="info-row"><span class="label">Phone</span><span class="value">01145368641</span></div>
+          <div class="info-row"><span class="label">Status</span><span class="value" style="color:var(--green)">✓ Available for Work</span></div>
+        </div>
+      </div>
+
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-num">2+</div>
+          <div class="stat-label">Internships</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">2+</div>
+          <div class="stat-label">Projects Built</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">5+</div>
+          <div class="stat-label">Technologies</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3.1</div>
+          <div class="stat-label">GPA / 4.0</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SKILLS ── -->
+  <section id="skills">
+    <div class="sec-label">03. Skills</div>
+    <h2 class="sec-title">My <em>Toolkit</em></h2>
+
+    <div class="skills-grid">
+      <div class="skill-cat">
+        <div class="cat-title"><span class="cat-icon">🎨</span> Front-End</div>
+        <div class="skill-tags">
+          <span class="tag">HTML5</span><span class="tag">CSS3</span><span class="tag">JavaScript</span>
+          <span class="tag">React.js</span><span class="tag">Bootstrap</span><span class="tag">Tailwind CSS</span>
+          <span class="tag">Responsive Design</span>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="cat-title"><span class="cat-icon">⚙️</span> Back-End</div>
+        <div class="skill-tags">
+          <span class="tag">C#</span><span class="tag">ASP.NET Core</span><span class="tag">Node.js</span>
+          <span class="tag">RESTful APIs</span><span class="tag">Authentication</span><span class="tag">Clean Architecture</span>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="cat-title"><span class="cat-icon">🗄️</span> Database</div>
+        <div class="skill-tags">
+          <span class="tag">SQL Server</span><span class="tag">MySQL</span><span class="tag">Entity Framework</span>
+          <span class="tag">Stored Procedures</span><span class="tag">Joins & Queries</span><span class="tag">Indexing</span>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="cat-title"><span class="cat-icon">📱</span> Marketing & Content</div>
+        <div class="skill-tags">
+          <span class="tag">Campaign Planning</span><span class="tag">Social Media Analytics</span>
+          <span class="tag">Copywriting</span><span class="tag">Content Creation</span><span class="tag">Scriptwriting</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXPERIENCE ── -->
+  <section id="experience">
+    <div class="sec-label">04. Experience</div>
+    <h2 class="sec-title">Where I've <em>Grown</em></h2>
+
+    <div class="exp-list">
+      <div class="exp-card">
+        <div class="exp-dot">🌐</div>
+        <div>
+          <div class="exp-org">NTI — Web Track</div>
+          <div class="exp-title-text">Web Development Trainee</div>
+          <div class="exp-period">📅 Web Development Internship</div>
+          <div class="exp-desc">
+            Enrolled in the NTI Web Development Track, gaining hands-on experience in Front-End development. Completed a 7-session soft skills course alongside technical training. Worked on practical projects including e-commerce applications, focusing on responsive design, user authentication, and deployment practices.
+          </div>
+          <div class="tech-pills">
+            <span class="tech-pill">React.js</span>
+            <span class="tech-pill">HTML</span>
+            <span class="tech-pill">CSS</span>
+            <span class="tech-pill">JavaScript</span>
+            <span class="tech-pill">Deployment</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-card">
+        <div class="exp-dot">🔧</div>
+        <div>
+          <div class="exp-org">DEPI — .NET Track</div>
+          <div class="exp-title-text">Back-End Development Trainee</div>
+          <div class="exp-period">📅 Back-End Development Internship</div>
+          <div class="exp-desc">
+            Enrolled in the DEPI Back-End Development Track, gaining practical experience in .NET development. Built and worked on real-world backend projects, focusing on API development, database design, authentication flows, and full CRUD operations with a clean architecture approach.
+          </div>
+          <div class="tech-pills">
+            <span class="tech-pill">C#</span>
+            <span class="tech-pill">ASP.NET Core</span>
+            <span class="tech-pill">SQL Server</span>
+            <span class="tech-pill">Entity Framework</span>
+            <span class="tech-pill">REST APIs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ── -->
+  <section id="projects">
+    <div class="sec-label">05. Projects</div>
+    <h2 class="sec-title">What I've <em>Built</em></h2>
+
+    <div class="projects-grid">
+      <div class="proj-card">
+        <div class="proj-type web">Web · Live</div>
+        <div class="proj-name">Bakery E-Commerce</div>
+        <p class="proj-desc">
+          A fully responsive e-commerce website for a bakery brand. Features include a product catalog, shopping experience, clean UI, and mobile-first responsive layout. Deployed live on GitHub Pages.
+        </p>
+        <div class="tech-pills" style="margin-bottom:20px">
+          <span class="tech-pill">HTML</span>
+          <span class="tech-pill">CSS</span>
+          <span class="tech-pill">JavaScript</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://marria-m.github.io/Bakery-e-Commerce-Project/home.html" target="_blank" class="proj-link">↗ Live Demo</a>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-type backend">Backend · .NET</div>
+        <div class="proj-name">Library Management System</div>
+        <p class="proj-desc">
+          A robust backend library management application built with ASP.NET Core and SQL Server. Includes full CRUD operations for books and members, authentication, and well-structured database schemas with Entity Framework.
+        </p>
+        <div class="tech-pills" style="margin-bottom:20px">
+          <span class="tech-pill">C#</span>
+          <span class="tech-pill">ASP.NET Core</span>
+          <span class="tech-pill">SQL Server</span>
+          <span class="tech-pill">Entity Framework</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://github.com/Marria-m/LibraryProject" target="_blank" class="proj-link">⌥ GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SERVICES ── -->
+  <section id="services">
+    <div class="sec-label">06. Services</div>
+    <h2 class="sec-title">What I <em>Offer</em></h2>
+
+    <div class="services-grid">
+      <div class="svc-card">
+        <div class="svc-icon">🌐</div>
+        <div class="svc-title">Web Development</div>
+        <div class="svc-desc">Building responsive and user-friendly websites using HTML, CSS, JavaScript, and React. Focus on creating clean designs and smooth, engaging user experiences.</div>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon">⚡</div>
+        <div class="svc-title">Backend Development</div>
+        <div class="svc-desc">Developing robust and scalable backend systems using .NET and ASP.NET Core, with a focus on clean architecture, RESTful APIs, SQL databases, and secure authentication.</div>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon">🗄️</div>
+        <div class="svc-title">Database Design</div>
+        <div class="svc-desc">Managing SQL databases to design efficient data systems. Experience includes normalized schemas, query optimization, indexing, and performance tuning within applications.</div>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon">✍️</div>
+        <div class="svc-title">Content & Copywriting</div>
+        <div class="svc-desc">Creating engaging content for websites, blogs, and social platforms. Includes campaign planning, analytics-driven strategy, and scriptwriting for reels and short videos.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EDUCATION ── -->
+  <section id="education">
+    <div class="sec-label">07. Education</div>
+    <h2 class="sec-title">Academic <em>Background</em></h2>
+
+    <div class="edu-card">
+      <div class="edu-icon">🎓</div>
+      <div>
+        <div class="edu-uni">Cairo University</div>
+        <div class="edu-degree">Faculty of Computers and Artificial Intelligence</div>
+        <div class="edu-meta">
+          <span class="edu-badge">2023 – 2027</span>
+          <span class="edu-badge highlight">GPA: 3.1 / 4.0</span>
+          <span class="edu-badge">Expected Graduation: 2027</span>
+          <span class="edu-badge" style="color:var(--accent3)">In Progress</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIALS ── -->
+  <section id="testimonials">
+    <div class="sec-label">08. Testimonials</div>
+    <h2 class="sec-title">What Clients <em>Say</em></h2>
+
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">Working with Mariam was a smooth and professional experience. She built our website with attention to detail and made the whole process easy for us.</div>
+        <div class="testi-author">— Client A</div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">Mariam is creative, reliable, and always delivers on time. Her work on our social media strategy helped us grow and engage more with our audience.</div>
+        <div class="testi-author">— Client B</div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">What I appreciate most about Mariam is her ability to simplify complex ideas. The content she created for us was clear, engaging, and exactly what we needed.</div>
+        <div class="testi-author">— Client C & D</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact">
+    <div class="sec-label">09. Contact</div>
+    <h2 class="sec-title">Let's <em>Connect</em></h2>
+
+    <div class="contact-wrap">
+      <div class="contact-info">
+        <h3>Have a project in mind?</h3>
+        <p>Whether you have a role to fill, a project to build, or just want to say hello — I'd love to hear from you. I'll respond within 24 hours.</p>
+
+        <div class="contact-items">
+          <a href="mailto:mariamehab135@gmail.com" class="contact-item">
+            <div class="ci-icon">✉️</div>
+            <div><span class="ci-label">Email</span><span class="ci-value">mariamehab135@gmail.com</span></div>
+          </a>
+          <a href="tel:01145368641" class="contact-item">
+            <div class="ci-icon">📞</div>
+            <div><span class="ci-label">Phone</span><span class="ci-value">01145368641</span></div>
+          </a>
+          <a href="https://www.linkedin.com/in/mariamehab1305" target="_blank" class="contact-item">
+            <div class="ci-icon">💼</div>
+            <div><span class="ci-label">LinkedIn</span><span class="ci-value">mariamehab1305</span></div>
+          </a>
+          <a href="https://github.com/Marria-m/" target="_blank" class="contact-item">
+            <div class="ci-icon">⌥</div>
+            <div><span class="ci-label">GitHub</span><span class="ci-value">github.com/Marria-m</span></div>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="contact-form">
+          <div class="form-group">
+            <label class="form-label">FULL_NAME *</label>
+            <input type="text" class="form-input" placeholder="Your name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">EMAIL_ADDRESS *</label>
+            <input type="email" class="form-input" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">SUBJECT *</label>
+            <input type="text" class="form-input" placeholder="What's this about?" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">MESSAGE *</label>
+            <textarea class="form-textarea" placeholder="Tell me about your project..."></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="handleSend()">✦ Send Message</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span>© 2025 Mariam Ehab — Full-Stack Developer</span>
+  <span>Built with HTML · CSS · JS — Cairo, Egypt</span>
+</footer>
+
+<script>
+  // ── Intersection Observer for section fade-in ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+  // ── Active nav link on scroll ──
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(s => navObserver.observe(s));
+
+  // ── Mobile sidebar ──
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  document.querySelectorAll('nav a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+
+  // ── Contact form ──
+  function handleSend() {
+    alert('Thanks for your message! Mariam will get back to you within 24 hours. 💌');
+  }
+
+  // ── Animated counter ──
+  function animateCounters() {
+    document.querySelectorAll('.stat-num').forEach(el => {
+      const target = parseFloat(el.textContent);
+      if (isNaN(target)) return;
+      const isDecimal = el.textContent.includes('.');
+      const suffix = el.textContent.replace(/[\d.]/g, '');
+      let current = 0;
+      const step = target / 40;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = (isDecimal ? current.toFixed(1) : Math.ceil(current)) + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 30);
+    });
+  }
+
+  const statsObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) { animateCounters(); statsObserver.disconnect(); }
+  }, { threshold: 0.5 });
+  const statsEl = document.querySelector('.stat-cards');
+  if (statsEl) statsObserver.observe(statsEl);
+</script>
+</body>
+</html>
